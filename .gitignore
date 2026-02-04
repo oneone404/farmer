@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Configs
+# configs/*.json
+
+# Logs
+*.log
+
+# Debug assets
+assets/debug/*
+!assets/debug/.gitkeep
+
+# Executables
+*.exe
+# adb/ (Thường giữ lại nếu tool là portable, nhưng nếu exe lớn thì nên bỏ)
+
+# IDEs
+.vscode/
+.idea/
+.vs/
