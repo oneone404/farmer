@@ -5,18 +5,31 @@ Hỗ trợ hot-reload và cấu hình riêng cho từng LDPlayer
 
 import json
 import os
+import sys
 from typing import Dict, Any, Optional
 
 # Đường dẫn
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_DIR = os.path.join(SCRIPT_DIR, "configs")
+if getattr(sys, 'frozen', False):
+    # Đường dẫn nơi chứa file .exe thực tế
+    EXE_DIR = os.path.dirname(sys.executable)
+    # Đường dẫn nơi giải nén các file bundle của PyInstaller
+    BUNDLE_DIR = sys._MEIPASS
+else:
+    EXE_DIR = os.path.dirname(os.path.abspath(__file__))
+    BUNDLE_DIR = EXE_DIR
+
+# Config và ADB luôn nằm cùng thư mục với file chạy (.exe hoặc .py)
+CONFIG_DIR = os.path.join(EXE_DIR, "configs")
 GLOBAL_CONFIG_FILE = os.path.join(CONFIG_DIR, "global.json")
+
+# Assets được bundle bên trong EXE (để không bị mất icon/template)
+ASSETS_DIR = os.path.join(BUNDLE_DIR, "assets")
 
 # ================= DEFAULT CONFIG =================
 
 DEFAULT_GLOBAL_CONFIG = {
     # ADB
-    "adb_path": os.path.join(SCRIPT_DIR, "adb", "adb.exe"),
+    "adb_path": os.path.join(EXE_DIR, "adb", "adb.exe"),
     
     # LDPlayer
     "ldplayer_path": r"C:\LDPlayer\LDPlayer9",
@@ -75,25 +88,25 @@ DEFAULT_GLOBAL_CONFIG = {
     "scroll_end": [600, 450],
     
     # Images
-    "panel_buy_img": os.path.join("assets", "templates", "panel_buy.png"),
-    "sold_out_img": os.path.join("assets", "templates", "sold_out.png"),
-    "btn_cua_hang_img": os.path.join("assets", "buttons", "btn_cua_hang.png"),
-    "btn_open_cua_hang_img": os.path.join("assets", "buttons", "btn_open_cua_hang.png"),
-    "btn_open_cua_hang_2_img": os.path.join("assets", "buttons", "btn_open_cua_hang2.png"),
-    "sold_out_list_img": os.path.join("assets", "templates", "sold_out_list.png"),
+    "panel_buy_img": os.path.join(ASSETS_DIR, "templates", "panel_buy.png"),
+    "sold_out_img": os.path.join(ASSETS_DIR, "templates", "sold_out.png"),
+    "btn_cua_hang_img": os.path.join(ASSETS_DIR, "buttons", "btn_cua_hang.png"),
+    "btn_open_cua_hang_img": os.path.join(ASSETS_DIR, "buttons", "btn_open_cua_hang.png"),
+    "btn_open_cua_hang_2_img": os.path.join(ASSETS_DIR, "buttons", "btn_open_cua_hang2.png"),
+    "sold_out_list_img": os.path.join(ASSETS_DIR, "templates", "sold_out_list.png"),
     
     # Vòi
-    "btn_cua_hang_voi_img": os.path.join("assets", "buttons", "btn_cua_hang_voi.png"),
-    "btn_open_cua_hang_voi_img": os.path.join("assets", "buttons", "btn_open_cua_hang_voi.png"),
-    "voi_sieu_cap_img": os.path.join("assets", "templates", "voi_sieu_cap.png"),
+    "btn_cua_hang_voi_img": os.path.join(ASSETS_DIR, "buttons", "btn_cua_hang_voi.png"),
+    "btn_open_cua_hang_voi_img": os.path.join(ASSETS_DIR, "buttons", "btn_open_cua_hang_voi.png"),
+    "voi_sieu_cap_img": os.path.join(ASSETS_DIR, "templates", "voi_sieu_cap.png"),
     
     # Thu hoạch
-    "btn_ve_nha_img": os.path.join("assets", "buttons", "btn_ve_nha.png"),
-    "btn_panel_th_img": os.path.join("assets", "buttons", "btn_panel_thu_hoach.png"),
-    "btn_thu_hoach_all_img": os.path.join("assets", "buttons", "btn_thu_hoach_all.png"),
-    "btn_ban_fruit_img": os.path.join("assets", "buttons", "btn_ban_fruit.png"),
-    "btn_open_ban_fruit_img": os.path.join("assets", "buttons", "btn_open_ban_fruit.png"),
-    "btn_xac_nhan_img": os.path.join("assets", "buttons", "btn_xac_nhan.png"),
+    "btn_ve_nha_img": os.path.join(ASSETS_DIR, "buttons", "btn_ve_nha.png"),
+    "btn_panel_th_img": os.path.join(ASSETS_DIR, "buttons", "btn_panel_thu_hoach.png"),
+    "btn_thu_hoach_all_img": os.path.join(ASSETS_DIR, "buttons", "btn_thu_hoach_all.png"),
+    "btn_ban_fruit_img": os.path.join(ASSETS_DIR, "buttons", "btn_ban_fruit.png"),
+    "btn_open_ban_fruit_img": os.path.join(ASSETS_DIR, "buttons", "btn_open_ban_fruit.png"),
+    "btn_xac_nhan_img": os.path.join(ASSETS_DIR, "buttons", "btn_xac_nhan.png"),
 }
 
 DEFAULT_INSTANCE_CONFIG = {
@@ -110,17 +123,17 @@ DEFAULT_INSTANCE_CONFIG = {
 
 # Danh sách trái cây mặc định
 DEFAULT_FRUITS = {
-    "Dâu Tây": {"img": os.path.join("assets", "fruits", "fruit_dau_tay.png"), "buy": True},
-    "Cà Rốt": {"img": os.path.join("assets", "fruits", "fruit_ca_rot.png"), "buy": True},
-    "Bí Ngô": {"img": os.path.join("assets", "fruits", "fruit_bi_ngo.png"), "buy": True},
-    "Dưa Hấu": {"img": os.path.join("assets", "fruits", "fruit_dua_hau.png"), "buy": True},
-    "Cổ Đại": {"img": os.path.join("assets", "fruits", "fruit_co_dai.png"), "buy": True},
-    "Khế": {"img": os.path.join("assets", "fruits", "fruit_khe.png"), "buy": True},
-    "Táo Đường": {"img": os.path.join("assets", "fruits", "fruit_tao_duong.png"), "buy": True},
-    "Xoài": {"img": os.path.join("assets", "fruits", "fruit_xoai.png"), "buy": True},
-    "Nho": {"img": os.path.join("assets", "fruits", "fruit_nho.png"), "buy": True},
-    "Dâu": {"img": os.path.join("assets", "fruits", "fruit_dau.png"), "buy": True},
-    "Dưa": {"img": os.path.join("assets", "fruits", "fruit_dua.png"), "buy": True},
+    "Dâu Tây": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_dau_tay.png"), "buy": True},
+    "Cà Rốt": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_ca_rot.png"), "buy": True},
+    "Bí Ngô": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_bi_ngo.png"), "buy": True},
+    "Dưa Hấu": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_dua_hau.png"), "buy": True},
+    "Cổ Đại": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_co_dai.png"), "buy": True},
+    "Khế": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_khe.png"), "buy": True},
+    "Táo Đường": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_tao_duong.png"), "buy": True},
+    "Xoài": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_xoai.png"), "buy": True},
+    "Nho": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_nho.png"), "buy": True},
+    "Dâu": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_dau.png"), "buy": True},
+    "Dưa": {"img": os.path.join(ASSETS_DIR, "fruits", "fruit_dua.png"), "buy": True},
 }
 
 SCALES = [1.0]  # Tối ưu tốc độ: chỉ dùng 1 tỷ lệ duy nhất

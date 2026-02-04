@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "use_time_gate": true,
+  "first_run_immediate": false,
+  "threshold": 0.8,
+  "enable_buy_fruits": true,
+  "enable_buy_voi": true,
+  "enable_harvest_sell": true,
+  "enable_telegram": false,
+  "fruits": {
+    "Dâu Tây": true,
+    "Cà Rốt": true,
+    "Bí Ngô": true,
+    "Dưa Hấu": true,
+    "Cổ Đại": true,
+    "Khế": false,
+    "Táo Đường": false,
+    "Xoài": false,
+    "Nho": false,
+    "Dâu": false,
+    "Dưa": false
+  }
+}

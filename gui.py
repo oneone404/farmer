@@ -717,8 +717,15 @@ class AutoBuyApp(ctk.CTk):
     
     def _run_automation_for_ld(self, idx: int, serial: str, row: LDInstanceRow):
         try:
+            # Xác định lệnh thực thi tùy theo việc đang chạy script hay exe
+            if getattr(sys, 'frozen', False):
+                # Khi chạy từ file EXE, gọi chính Farmer.exe với cờ --worker
+                cmd = [sys.executable, "--worker", serial, str(idx)]
+            else:
+                cmd = ["python", "-u", "main.py", serial, str(idx)]
+
             process = subprocess.Popen(
-                ["python", "-u", "main.py", serial, str(idx)],
+                cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
@@ -767,5 +774,17 @@ class AutoBuyApp(ctk.CTk):
 
 
 if __name__ == "__main__":
+    # Kiểm tra xem có phải đang chạy chế độ worker cho subprocess không
+    if "--worker" in sys.argv:
+        try:
+            import main
+            # Loại bỏ cờ --worker khỏi sys.argv để không làm nhiễu logic của main.py
+            sys.argv.remove("--worker")
+            main.main()
+        except Exception as e:
+            print(f"Worker Error: {e}")
+        sys.exit(0)
+
+    # Chạy giao diện chính
     app = AutoBuyApp()
     app.mainloop()

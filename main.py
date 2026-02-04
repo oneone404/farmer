@@ -14,80 +14,161 @@ sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 # Import config manager
 from config_manager import config, FRUITS, DEFAULT_FRUITS, SCALES
 
-# Lấy device serial và LD index từ arguments
-DEVICE_SERIAL = sys.argv[1] if len(sys.argv) > 1 else None
-LD_INDEX = int(sys.argv[2]) if len(sys.argv) > 2 else 0
-
-# Load config cho LD instance này
-instance_config = config.load_instance_config(LD_INDEX)
-
-# Các biến config (từ instance hoặc global)
-ADB_PATH = config.get("adb_path")
-THRESHOLD = instance_config.get("threshold", config.get("threshold", 0.8))
-USE_TIME_GATE = instance_config.get("use_time_gate", config.get("use_time_gate", True))
-ENABLE_FIRST_RUN_IMMEDIATE = instance_config.get("first_run_immediate", True)
-ENABLE_BUY_FRUITS = instance_config.get("enable_buy_fruits", True)
-ENABLE_BUY_VOI = instance_config.get("enable_buy_voi", True)
-ENABLE_HARVEST_SELL = instance_config.get("enable_harvest_sell", True)
-ENABLE_TELEGRAM = instance_config.get("enable_telegram", False)
+# Biến toàn cục (sẽ được init trong main)
+DEVICE_SERIAL = None
+LD_INDEX = 0
+instance_config = {}
+ADB_PATH = ""
+THRESHOLD = 0.0
+USE_TIME_GATE = False
+ENABLE_FIRST_RUN_IMMEDIATE = False
+ENABLE_BUY_FRUITS = False
+ENABLE_BUY_VOI = False
+ENABLE_HARVEST_SELL = False
+ENABLE_TELEGRAM = False
 
 # ROI config
-ROI_BTN_CUA_HANG = tuple(config.get("roi_btn_cua_hang", [1280, 80, 1800, 370]))
-ROI_BTN_OPEN_CUA_HANG = tuple(config.get("roi_btn_open_cua_hang", [785, 10, 1150, 615]))
-ROI_BTN_OPEN_CUA_HANG_2 = tuple(config.get("roi_btn_open_cua_hang_2", [1255, 400, 1650, 540]))
-ROI_PANEL_CHECK = tuple(config.get("roi_panel_check", [180, 50, 520, 165]))
-ROI_PANEL_ALL = tuple(config.get("roi_panel_all", [200, 160, 380, 1024]))
-ROI_LIST = tuple(config.get("roi_list", [610, 150, 1710, 660]))
-ROI_BUY = tuple(config.get("roi_buy", [1010, 790, 1380, 1005]))
-ROI_THU_HOACH_ALL = tuple(config.get("roi_thu_hoach_all", [1515, 940, 1900, 1060]))
-ROI_CONFIRM_TH = tuple(config.get("roi_confirm_th", [950, 700, 1405, 910]))
+ROI_BTN_CUA_HANG = (0, 0, 0, 0)
+ROI_BTN_OPEN_CUA_HANG = (0, 0, 0, 0)
+ROI_BTN_OPEN_CUA_HANG_2 = (0, 0, 0, 0)
+ROI_PANEL_CHECK = (0, 0, 0, 0)
+ROI_PANEL_ALL = (0, 0, 0, 0)
+ROI_LIST = (0, 0, 0, 0)
+ROI_BUY = (0, 0, 0, 0)
+ROI_THU_HOACH_ALL = (0, 0, 0, 0)
+ROI_CONFIRM_TH = (0, 0, 0, 0)
 
 # Button config
-BUY_BTN = tuple(config.get("buy_btn", [1240, 910]))
-MAX_QTY_BTN = tuple(config.get("max_qty_btn", [1228, 683]))
-CONFIRM_BTN = tuple(config.get("confirm_btn", [985, 785]))
-CLOSE_FRUIT_BTN_1 = tuple(config.get("close_fruit_btn_1", [1690, 115]))
-CLOSE_FRUIT_BTN_2 = tuple(config.get("close_fruit_btn_2", [1310, 700]))
-PANEL_VOI_SELECT_BTN = tuple(config.get("panel_voi_select_btn", [1320, 590]))
-OPEN_TH_SUB = tuple(config.get("open_th_sub", [770, 395]))
-HARVEST_ALL_BTN = tuple(config.get("harvest_all_btn", [1700, 1000]))
-CLOSE_TH_BTN = tuple(config.get("close_th_btn", [1840, 70]))
-OPEN_BAN_SUB = tuple(config.get("open_ban_sub", [1325, 590]))
-SELECT_ALL_PRODUCE = tuple(config.get("select_all_produce_btn", [1245, 955]))
-SELL_BTN = tuple(config.get("sell_btn", [1565, 960]))
-OK_SELL_BTN = tuple(config.get("ok_sell_btn", [965, 830]))
-CLOSE_BAN_BTN = tuple(config.get("close_ban_btn", [1840, 70]))
+BUY_BTN = (0, 0)
+MAX_QTY_BTN = (0, 0)
+CONFIRM_BTN = (0, 0)
+CLOSE_FRUIT_BTN_1 = (0, 0)
+CLOSE_FRUIT_BTN_2 = (0, 0)
+PANEL_VOI_SELECT_BTN = (0, 0)
+OPEN_TH_SUB = (0, 0)
+HARVEST_ALL_BTN = (0, 0)
+CLOSE_TH_BTN = (0, 0)
+OPEN_BAN_SUB = (0, 0)
+SELECT_ALL_PRODUCE = (0, 0)
+SELL_BTN = (0, 0)
+OK_SELL_BTN = (0, 0)
+CLOSE_BAN_BTN = (0, 0)
 
 # Constants
-SCAN_INTERVAL = config.get("scan_interval", 3)
-HARVEST_SELL_CYCLES = config.get("harvest_sell_cycles", 2)
-SELL_CYCLES_AFTER_HARVEST = config.get("sell_cycles_after_harvest", 2)
-TOTAL_FRUITS_TO_CHECK = config.get("total_fruits_to_check", 11)
+SCAN_INTERVAL = 0
+HARVEST_SELL_CYCLES = 0
+SELL_CYCLES_AFTER_HARVEST = 0
+TOTAL_FRUITS_TO_CHECK = 0
 
 # Scroll config
-SCROLL_START = tuple(config.get("scroll_start", [600, 900]))
-SCROLL_END = tuple(config.get("scroll_end", [600, 450]))
+SCROLL_START = (0, 0)
+SCROLL_END = (0, 0)
 
 # Image paths
-PANEL_BUY_IMG = config.get("panel_buy_img", "assets/templates/panel_buy.png")
-SOLD_OUT_IMG = config.get("sold_out_img", "assets/templates/sold_out.png")
-BTN_CUA_HANG_IMG = config.get("btn_cua_hang_img", "assets/buttons/btn_cua_hang.png")
-BTN_OPEN_CUA_HANG_IMG = config.get("btn_open_cua_hang_img", "assets/buttons/btn_open_cua_hang.png")
-BTN_OPEN_CUA_HANG_2_IMG = config.get("btn_open_cua_hang_2_img", "assets/buttons/btn_open_cua_hang2.png")
-SOLD_OUT_LIST_IMG = config.get("sold_out_list_img", "assets/templates/sold_out_list.png")
-BTN_CUA_HANG_VOI_IMG = config.get("btn_cua_hang_voi_img", "assets/buttons/btn_cua_hang_voi.png")
-BTN_OPEN_CUA_HANG_VOI_IMG = config.get("btn_open_cua_hang_voi_img", "assets/buttons/btn_open_cua_hang_voi.png")
-VOI_SIEU_CAP_IMG = config.get("voi_sieu_cap_img", "assets/templates/voi_sieu_cap.png")
-BTN_VE_NHA_IMG = config.get("btn_ve_nha_img", "assets/buttons/btn_ve_nha.png")
-BTN_PANEL_TH_IMG = config.get("btn_panel_th_img", "assets/buttons/btn_panel_thu_hoach.png")
-BTN_THU_HOACH_ALL_IMG = config.get("btn_thu_hoach_all_img", "assets/buttons/btn_thu_hoach_all.png")
-BTN_BAN_FRUIT_IMG = config.get("btn_ban_fruit_img", "assets/buttons/btn_ban_fruit.png")
-BTN_OPEN_BAN_FRUIT_IMG = config.get("btn_open_ban_fruit_img", "assets/buttons/btn_open_ban_fruit.png")
-BTN_XAC_NHAN_IMG = config.get("btn_xac_nhan_img", "assets/buttons/btn_xac_nhan.png")
+PANEL_BUY_IMG = ""
+SOLD_OUT_IMG = ""
+BTN_CUA_HANG_IMG = ""
+BTN_OPEN_CUA_HANG_IMG = ""
+BTN_OPEN_CUA_HANG_2_IMG = ""
+SOLD_OUT_LIST_IMG = ""
+BTN_CUA_HANG_VOI_IMG = ""
+BTN_OPEN_CUA_HANG_VOI_IMG = ""
+VOI_SIEU_CAP_IMG = ""
+BTN_VE_NHA_IMG = ""
+BTN_PANEL_TH_IMG = ""
+BTN_THU_HOACH_ALL_IMG = ""
+BTN_BAN_FRUIT_IMG = ""
+BTN_OPEN_BAN_FRUIT_IMG = ""
+BTN_XAC_NHAN_IMG = ""
 
 # Telegram config
-TELEGRAM_TOKEN = config.get("telegram_token", "")
-TELEGRAM_ID = config.get("telegram_id", "")
+TELEGRAM_TOKEN = ""
+TELEGRAM_ID = ""
+
+def main():
+    global DEVICE_SERIAL, LD_INDEX, instance_config, ADB_PATH
+    global THRESHOLD, USE_TIME_GATE, ENABLE_FIRST_RUN_IMMEDIATE, ENABLE_BUY_FRUITS, ENABLE_BUY_VOI, ENABLE_HARVEST_SELL, ENABLE_TELEGRAM
+    global ROI_BTN_CUA_HANG, ROI_BTN_OPEN_CUA_HANG, ROI_BTN_OPEN_CUA_HANG_2, ROI_PANEL_CHECK, ROI_PANEL_ALL, ROI_LIST, ROI_BUY, ROI_THU_HOACH_ALL, ROI_CONFIRM_TH
+    global BUY_BTN, MAX_QTY_BTN, CONFIRM_BTN, CLOSE_FRUIT_BTN_1, CLOSE_FRUIT_BTN_2, PANEL_VOI_SELECT_BTN, OPEN_TH_SUB, HARVEST_ALL_BTN, CLOSE_TH_BTN, OPEN_BAN_SUB, SELECT_ALL_PRODUCE, SELL_BTN, OK_SELL_BTN, CLOSE_BAN_BTN
+    global SCAN_INTERVAL, HARVEST_SELL_CYCLES, SELL_CYCLES_AFTER_HARVEST, TOTAL_FRUITS_TO_CHECK
+    global SCROLL_START, SCROLL_END
+    global PANEL_BUY_IMG, SOLD_OUT_IMG, BTN_CUA_HANG_IMG, BTN_OPEN_CUA_HANG_IMG, BTN_OPEN_CUA_HANG_2_IMG, SOLD_OUT_LIST_IMG, BTN_CUA_HANG_VOI_IMG, BTN_OPEN_CUA_HANG_VOI_IMG, VOI_SIEU_CAP_IMG, BTN_VE_NHA_IMG, BTN_PANEL_TH_IMG, BTN_THU_HOACH_ALL_IMG, BTN_BAN_FRUIT_IMG, BTN_OPEN_BAN_FRUIT_IMG, BTN_XAC_NHAN_IMG
+    global TELEGRAM_TOKEN, TELEGRAM_ID
+
+    # Lấy device serial và LD index từ arguments
+    DEVICE_SERIAL = sys.argv[1] if len(sys.argv) > 1 else None
+    LD_INDEX = int(sys.argv[2]) if len(sys.argv) > 2 else 0
+
+    # Load config cho LD instance này
+    instance_config = config.load_instance_config(LD_INDEX)
+
+    # Các biến config (từ instance hoặc global)
+    ADB_PATH = config.get("adb_path")
+    THRESHOLD = instance_config.get("threshold", config.get("threshold", 0.9))
+    USE_TIME_GATE = instance_config.get("use_time_gate", config.get("use_time_gate", True))
+    ENABLE_FIRST_RUN_IMMEDIATE = instance_config.get("first_run_immediate", False)
+    ENABLE_BUY_FRUITS = instance_config.get("enable_buy_fruits", True)
+    ENABLE_BUY_VOI = instance_config.get("enable_buy_voi", True)
+    ENABLE_HARVEST_SELL = instance_config.get("enable_harvest_sell", True)
+    ENABLE_TELEGRAM = instance_config.get("enable_telegram", False)
+
+    # ROI config
+    ROI_BTN_CUA_HANG = tuple(config.get("roi_btn_cua_hang", [1280, 80, 1800, 370]))
+    ROI_BTN_OPEN_CUA_HANG = tuple(config.get("roi_btn_open_cua_hang", [785, 10, 1150, 615]))
+    ROI_BTN_OPEN_CUA_HANG_2 = tuple(config.get("roi_btn_open_cua_hang_2", [1255, 400, 1650, 540]))
+    ROI_PANEL_CHECK = tuple(config.get("roi_panel_check", [180, 50, 520, 165]))
+    ROI_PANEL_ALL = tuple(config.get("roi_panel_all", [200, 160, 380, 1024]))
+    ROI_LIST = tuple(config.get("roi_list", [610, 150, 1710, 660]))
+    ROI_BUY = tuple(config.get("roi_buy", [1010, 790, 1380, 1005]))
+    ROI_THU_HOACH_ALL = tuple(config.get("roi_thu_hoach_all", [1515, 940, 1900, 1060]))
+    ROI_CONFIRM_TH = tuple(config.get("roi_confirm_th", [950, 700, 1405, 910]))
+
+    # Button config
+    BUY_BTN = tuple(config.get("buy_btn", [1240, 910]))
+    MAX_QTY_BTN = tuple(config.get("max_qty_btn", [1228, 683]))
+    CONFIRM_BTN = tuple(config.get("confirm_btn", [985, 785]))
+    CLOSE_FRUIT_BTN_1 = tuple(config.get("close_fruit_btn_1", [1690, 115]))
+    CLOSE_FRUIT_BTN_2 = tuple(config.get("close_fruit_btn_2", [1310, 700]))
+    PANEL_VOI_SELECT_BTN = tuple(config.get("panel_voi_select_btn", [1320, 590]))
+    OPEN_TH_SUB = tuple(config.get("open_th_sub", [770, 395]))
+    HARVEST_ALL_BTN = tuple(config.get("harvest_all_btn", [1700, 1000]))
+    CLOSE_TH_BTN = tuple(config.get("close_th_btn", [1840, 70]))
+    OPEN_BAN_SUB = tuple(config.get("open_ban_sub", [1325, 590]))
+    SELECT_ALL_PRODUCE = tuple(config.get("select_all_produce_btn", [1245, 955]))
+    SELL_BTN = tuple(config.get("sell_btn", [1565, 960]))
+    OK_SELL_BTN = tuple(config.get("ok_sell_btn", [965, 830]))
+    CLOSE_BAN_BTN = tuple(config.get("close_ban_btn", [1840, 70]))
+
+    # Constants
+    SCAN_INTERVAL = config.get("scan_interval", 3)
+    HARVEST_SELL_CYCLES = config.get("harvest_sell_cycles", 2)
+    SELL_CYCLES_AFTER_HARVEST = config.get("sell_cycles_after_harvest", 2)
+    TOTAL_FRUITS_TO_CHECK = config.get("total_fruits_to_check", 11)
+
+    # Scroll config
+    SCROLL_START = tuple(config.get("scroll_start", [600, 900]))
+    SCROLL_END = tuple(config.get("scroll_end", [600, 450]))
+
+    # Image paths
+    PANEL_BUY_IMG = config.get("panel_buy_img", "assets/templates/panel_buy.png")
+    SOLD_OUT_IMG = config.get("sold_out_img", "assets/templates/sold_out.png")
+    BTN_CUA_HANG_IMG = config.get("btn_cua_hang_img", "assets/buttons/btn_cua_hang.png")
+    BTN_OPEN_CUA_HANG_IMG = config.get("btn_open_cua_hang_img", "assets/buttons/btn_open_cua_hang.png")
+    BTN_OPEN_CUA_HANG_2_IMG = config.get("btn_open_cua_hang_2_img", "assets/buttons/btn_open_cua_hang2.png")
+    SOLD_OUT_LIST_IMG = config.get("sold_out_list_img", "assets/templates/sold_out_list.png")
+    BTN_CUA_HANG_VOI_IMG = config.get("btn_cua_hang_voi_img", "assets/buttons/btn_cua_hang_voi.png")
+    BTN_OPEN_CUA_HANG_VOI_IMG = config.get("btn_open_cua_hang_voi_img", "assets/buttons/btn_open_cua_hang_voi.png")
+    VOI_SIEU_CAP_IMG = config.get("voi_sieu_cap_img", "assets/templates/voi_sieu_cap.png")
+    BTN_VE_NHA_IMG = config.get("btn_ve_nha_img", "assets/buttons/btn_ve_nha.png")
+    BTN_PANEL_TH_IMG = config.get("btn_panel_th_img", "assets/buttons/btn_panel_thu_hoach.png")
+    BTN_THU_HOACH_ALL_IMG = config.get("btn_thu_hoach_all_img", "assets/buttons/btn_thu_hoach_all.png")
+    BTN_BAN_FRUIT_IMG = config.get("btn_ban_fruit_img", "assets/buttons/btn_ban_fruit.png")
+    BTN_OPEN_BAN_FRUIT_IMG = config.get("btn_open_ban_fruit_img", "assets/buttons/btn_open_ban_fruit.png")
+    BTN_XAC_NHAN_IMG = config.get("btn_xac_nhan_img", "assets/buttons/btn_xac_nhan.png")
+
+    # Telegram config
+    TELEGRAM_TOKEN = config.get("telegram_token", "")
+    TELEGRAM_ID = config.get("telegram_id", "")
 
 # ================= UTILS =================
 def adb(cmd):
