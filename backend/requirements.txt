@@ -1,0 +1,14 @@
+# Farmer Backend Requirements
+# FastAPI and server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+websockets>=11.0
+
+# Image processing (for automation modules)
+opencv-python-headless>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
+
+# System
+psutil>=5.9.0

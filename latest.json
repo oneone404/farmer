@@ -1,0 +1,11 @@
+{
+    "version": "1.0.0",
+    "notes": "Official release 1.0.0 with Sidecar Backend (Fully Fixed).\n\n- Fixed backend logging config for windowed mode (isatty error).\n- Unicode encoding issues resolved.\n- Backend bundled as sidecar with auto-start and auto-shutdown.\n- All system paths fully portable.",
+    "pub_date": "2026-02-06T11:55:00Z",
+    "platforms": {
+        "windows-x86_64": {
+            "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSRWFTcytaeWFoa1Bvelphemo4ZnoyNWVGNUdMdEx0Q29WdXdCZko0cEp5d0E3ZnIraDYxdkpEdWZRSnhyQXRHU3FKckJJSmNOVk9EV1F5UnBodit3cGdKQXV6VXpLRUFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzcwMzc4NzAyCWZpbGU6RmFybWVyXzEuMC4wX3g2NC1zZXR1cC5leGUKRWsxeVRjNy92UWxUMXdpQXBuYkhBUER4QU96TjRjblFvMWEwRThPMjQyRWdjbFJiYTgrK0Q3U285cWtTT1VNbHcxY3FaTG9TbVkzY1dJM1h4dGRmREE9PQo=",
+            "url": "https://github.com/oneone404/farmer/releases/download/v1.0.0/Farmer_1.0.0_x64-setup.exe"
+        }
+    }
+}
